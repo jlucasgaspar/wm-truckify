@@ -1,3 +1,11 @@
 import TextInput from "./TextInput"
 
-export { TextInput }
+import NumberInput from "./NumberInput"
+
+import FileInput from "./FileInput"
+
+export {
+  TextInput,
+  NumberInput,
+  FileInput
+}

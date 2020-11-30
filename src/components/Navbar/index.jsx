@@ -2,24 +2,22 @@ import React, { useState } from "react"
 import { Link } from "react-router-dom"
 
 import { Layout, Menu } from "antd"
-import { GrMapLocation } from "react-icons/gr"
+import { GrMapLocation, GrUserManager } from "react-icons/gr"
 import {
   PoweroffOutlined,
   EditOutlined,
   FileDoneOutlined,
   DatabaseOutlined,
   IdcardOutlined,
-  UserOutlined
+  UserOutlined,
+  HomeOutlined
 } from "@ant-design/icons"
-
-import { useAuth } from "../../hooks/Auth"
 
 const { Sider } = Layout
 const { SubMenu } = Menu
 
-const Navbar = ({ children, authenticated }) => {
+const Navbar = ({ children, authenticated, currentUser, logout }) => {
   const [menuIsHidden, setMenuIsHidden] = useState(true)
-  const { currentUser, logout } = useAuth()
 
   return (
     <Layout style={{ minHeight: "100vh" }}>
@@ -31,14 +29,14 @@ const Navbar = ({ children, authenticated }) => {
           collapsible
           collapsed={menuIsHidden}
           style={{
-            background: "#DDD",
+            background: "#E5E5E5",
             boxShadow: "0px 0px 5px 2px rgba(0,0,0,0.3)",
             borderRight: "solid 1px  rgba(0,0,0,0.2)",
-            zIndex: 100
+            zIndex: 1
           }}
         >
           <div onClick={() => setMenuIsHidden(!menuIsHidden)} style={{ height: 100, display: "flex" }}>
-            <Link to="/" style={{ margin: "auto" }}>
+            <Link to="/inicio" style={{ margin: "auto" }}>
               Logo
             </Link>
           </div>
@@ -55,9 +53,25 @@ const Navbar = ({ children, authenticated }) => {
           >
            <Menu.Item
               style={{ color: "#000", margin: "auto", marginTop: 15 }}
+              icon={<HomeOutlined style={{ fontSize: 20, color: "#000" }} />}
+              >
+              <Link to="/inicio" style={{ color: "black" }}>
+                Início
+              </Link>
+            </Menu.Item>
+           <Menu.Item
+              style={{ color: "#000", margin: "auto", marginTop: 15 }}
+              icon={<GrUserManager style={{ fontSize: 20, color: "#000" }} />}
+              >
+              <Link to="/clientes" style={{ color: "black" }}>
+                Clientes
+              </Link>
+            </Menu.Item>
+            <Menu.Item
+              style={{ color: "#000", margin: "auto", marginTop: 15 }}
               icon={<FileDoneOutlined style={{ fontSize: 20, color: "#000" }} />}
               >
-              <Link to="/notas" style={{ color: "black" }}>
+              <Link to="/nfs" style={{ color: "black" }}>
                 Notas Fiscais
               </Link>
             </Menu.Item>

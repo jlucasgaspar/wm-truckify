@@ -28,7 +28,7 @@ const Login = () => {
     })
 
     setLoadingForm(false)
-  }, [])
+  }, [login])
 
   return (
     <Container>

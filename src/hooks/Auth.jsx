@@ -8,7 +8,7 @@ const AuthContext = createContext({
   login: async () => {},
   logout: async () => {},
   authenticated: false,
-  loadingApp: true,
+  loadingAuth: true,
   currentUser: {
     name: "",
     email: "",
@@ -20,14 +20,14 @@ const AuthContext = createContext({
 const AuthProvider = ({ children }) => {
   const [currentUser, setCurrentUser] = useState({})
   const [authenticated, setAuthenticated] = useState(false)
-  const [loadingApp, setLoadingApp] = useState(true)
+  const [loadingAuth, setLoadingAuth] = useState(true)
   const { findWhere, findById, deleteById, save } = useFirestore()
   const { addToast } = useToasts()
 
   useEffect(() => {   
     return auth.onAuthStateChanged(async user => {
       if (!user) {
-        setLoadingApp(false)
+        setLoadingAuth(false)
         setAuthenticated(false)
         return setCurrentUser({})
       }
@@ -46,12 +46,12 @@ const AuthProvider = ({ children }) => {
           photo: data.photo
         })
   
-        setLoadingApp(false)
+        setLoadingAuth(false)
   
         return setAuthenticated(true)
       }
     })
-  }, [findById, setAuthenticated, setCurrentUser, setLoadingApp])
+  }, [findById, setAuthenticated, setCurrentUser, setLoadingAuth])
 
   const register = useCallback(async ({ email, password, successMsg, errMsg }) => {   
     try {
@@ -128,7 +128,7 @@ const AuthProvider = ({ children }) => {
       console.log("useAuth Error: ", err)
       return addToast(errMsg, { appearance: "error" })
     }
-  }, [addToast, currentUser, findWhere])
+  }, [addToast, findWhere])
 
   const logout = useCallback(() => {
     setCurrentUser({})
@@ -140,7 +140,7 @@ const AuthProvider = ({ children }) => {
     <AuthContext.Provider value={{
         currentUser: currentUser,
         authenticated: authenticated,
-        loadingApp: loadingApp,
+        loadingAuth: loadingAuth,
         register,
         login,
         logout

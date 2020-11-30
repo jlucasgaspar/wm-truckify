@@ -7,14 +7,19 @@ import Navbar from "../components/Navbar"
 import { LoadingComponent } from "../components/Loading"
 
 const AppRoute = ({ isPrivate = false, ...rest }) => {
-  const { loadingApp, authenticated } = useAuth()
+  const { loadingAuth, authenticated, currentUser } = useAuth()
 
-  if (loadingApp) return <LoadingComponent />
+  if (loadingAuth) return <LoadingComponent />
+
   if (isPrivate === authenticated) return (
-    <Navbar authenticated={authenticated}>
+    <Navbar
+      authenticated={authenticated}
+      currentUser={currentUser}
+    >
       <Route {...rest} />
     </Navbar>
   )
+  
   return (
     isPrivate
     ? <Redirect to="/" />

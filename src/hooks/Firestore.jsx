@@ -9,6 +9,7 @@ const FirestoreContext = createContext({
   find: async () => {},
   findById: async () => {},
   findWhere: async () => {},
+  findWhereTwice: async () => {},
   findByOrder: async () => {},
   findWhereByOrder: async () => {}
 })
@@ -30,8 +31,6 @@ const FirestoreProvider = ({ children }) => {
       if (successMsg) {
         addToast(successMsg, { appearance: "success" })
       }
-
-      return { message: "Documento salvo com sucesso." }
     } catch (err) {
       console.log("useFirestor Error: ", err)
       return addToast(errMsg, { appearance: "error" })
@@ -67,15 +66,11 @@ const FirestoreProvider = ({ children }) => {
         .doc(id)
         .get()
 
-      if (!snap.exists) {
-        return addToast(errMsg, { appearance: "error" })
-      }
-
       if (successMsg) {
         addToast(successMsg, { appearance: "error" })
       }
 
-      return { data: snap.data() }
+      return { data: snap.data(), snapshot: snap }
     } catch (err) {
       console.log("useFirestore Error: ", err)
 
@@ -83,19 +78,20 @@ const FirestoreProvider = ({ children }) => {
     }
   }, [addToast])
 
-  const findWhere = useCallback(async ({ collection, whereField, whereValue, successMsg, errMsg }) => {
+  const findWhere = useCallback(async ({
+    collection, whereField, whereValue, successMsg, errMsg
+  }) => {
     try {
       const snap = await firestore
         .collection(collection)
         .where(whereField, "==", whereValue)
         .get()
 
-      if (snap.empty) {
-        return addToast(errMsg, { appearance: "error" })
-      }
-
       const array = []
-      snap.forEach(doc => array.push(doc.data()))
+      snap.forEach(doc => array.push({
+        ...doc.data(),
+        key: doc.id
+      }))
 
       if (successMsg) {
         addToast(successMsg, { appearance: "success" })
@@ -108,9 +104,56 @@ const FirestoreProvider = ({ children }) => {
     }
   }, [addToast])
 
+  const findWhereTwice = useCallback(async ({
+    collection, whereField, whereValue, whereField2, whereValue2, successMsg, errMsg
+  }) => {
+    try {
+      const snap = await firestore
+        .collection(collection)
+        .where(whereField, "==", whereValue)
+        .where(whereField2, "==", whereValue2)
+        .get()
+
+      const array = []
+      snap.forEach(doc => {
+        return array.push({
+          ...doc.data(),
+          key: doc.id
+        })
+      })
+
+      return { data: array, snapshot: snap }
+    } catch (err) {
+      console.log("useFirestore Error: ", err)
+      return addToast(errMsg, { appearance: "error" })
+    }
+  }, [])
+
   const findByOrder = useCallback(async () => {}, [])
 
-  const findWhereByOrder = useCallback(async () => {}, [])
+  const findWhereByOrder = useCallback(async ({
+    collection, whereField, whereValue, orderField, ascOrDesc, errMsg
+  }) => {
+    try {
+      const snap = await firestore
+        .collection(collection)
+        .where(whereField, "==", whereValue)
+        .orderBy(orderField, ascOrDesc)
+        .get()
+
+      const array = []
+      snap.forEach(doc => array.push({
+        ...doc.data(),
+        key: doc.id
+      }))
+
+      return { data: array, snapshot: snap }
+    } catch (err) {
+      console.log("useFirestore Error: ", err)
+      return addToast(errMsg, { appearance: "error" })
+    }
+      
+  }, [addToast])
 
   return (
     <FirestoreContext.Provider
@@ -122,6 +165,7 @@ const FirestoreProvider = ({ children }) => {
         findById,
         findByOrder,
         findWhere,
+        findWhereTwice,
         findWhereByOrder
       }}
     >
