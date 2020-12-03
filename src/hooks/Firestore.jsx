@@ -3,13 +3,14 @@ import { useToasts } from "react-toast-notifications"
 import { firestore, firebase } from "../services/firebase"
 
 const FirestoreContext = createContext({
-  save: async () => {},
+  save: async ({ collection, id, savedData, successMsg, errMsg }) => {},
   update: async () => {},
   deleteById: async () => {},
   find: async () => {},
   findById: async () => {},
   findWhere: async () => {},
   findWhereTwice: async () => {},
+  findWhereIsDifferentAndWhereIsEqual: async () => {},
   findByOrder: async () => {},
   findWhereByOrder: async () => {}
 })
@@ -37,7 +38,23 @@ const FirestoreProvider = ({ children }) => {
     }
   }, [addToast])
 
-  const update = useCallback(async () => {}, [])
+  const update = useCallback(async ({ collection, id, updatedData, successMsg, errMsg }) => {
+    try {
+      await firestore
+        .collection(collection)
+        .doc(id)
+        .update(updatedData)
+
+      if (successMsg) {
+        addToast(successMsg, { appearance: "success" })
+      }
+
+      return { message: "Documento atualizado com sucesso." }
+    } catch (err) {
+      console.log("useFirestore Error: ", err)
+      return addToast(errMsg, { appearance: "error" })
+    }
+  }, [addToast])
 
   const deleteById = useCallback(async ({ collection, id, successMsg, errMsg }) => {
     try {
@@ -100,6 +117,36 @@ const FirestoreProvider = ({ children }) => {
       return { data: array, snapshot: snap }
     } catch (err) {
       console.log("useFirestore Error: ", err)
+      if (errMsg) {
+        return addToast(errMsg, { appearance: "error" })
+      }
+    }
+  }, [addToast])
+
+  const findWhereIsDifferentAndWhereIsEqual = useCallback(async ({
+    collection, whereFieldEqual, whereValueEqual,  whereFieldDiff, whereValueDiff, successMsg, errMsg
+  }) => {
+    try {
+      const snap = await firestore
+        .collection(collection)
+        .where(whereFieldEqual, "==", whereValueEqual)
+        .where(whereFieldDiff, "!=", whereValueDiff)
+        .get()
+
+      const array = []
+      snap.forEach(doc => array.push({
+        ...doc.data(),
+        key: doc.id,
+        date: doc.data().date.toDate()
+      }))
+
+      if (successMsg) {
+        addToast(successMsg, { appearance: "success" })
+      }
+
+      return { data: array, snapshot: snap }
+    } catch (err) {
+      console.log("useFirestore Error: ", err)
       return addToast(errMsg, { appearance: "error" })
     }
   }, [addToast])
@@ -127,18 +174,18 @@ const FirestoreProvider = ({ children }) => {
       console.log("useFirestore Error: ", err)
       return addToast(errMsg, { appearance: "error" })
     }
-  }, [])
+  }, [addToast]) 
 
   const findByOrder = useCallback(async () => {}, [])
 
   const findWhereByOrder = useCallback(async ({
-    collection, whereField, whereValue, orderField, ascOrDesc, errMsg
+    collection, whereField, whereValue, orderField, errMsg
   }) => {
     try {
       const snap = await firestore
         .collection(collection)
         .where(whereField, "==", whereValue)
-        .orderBy(orderField, ascOrDesc)
+        .orderBy(orderField)
         .get()
 
       const array = []
@@ -166,6 +213,7 @@ const FirestoreProvider = ({ children }) => {
         findByOrder,
         findWhere,
         findWhereTwice,
+        findWhereIsDifferentAndWhereIsEqual,
         findWhereByOrder
       }}
     >

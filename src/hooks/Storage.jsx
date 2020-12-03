@@ -11,16 +11,16 @@ const StorageProvider = ({ children }) => {
   const { addToast } = useToasts()
   const { currentUser } = useAuth()
 
-  const saveFile = useCallback(async ({ folder, filename, savedFile, errMsg }) => {
+  const saveFile = useCallback(async ({ folder, filename, savedFile, errMsg, additionalData = "" }) => {
     const timestamp = Date.now()
 
     try {
       await storage
-        .ref(`${folder}/${filename}-${currentUser.id}_${timestamp}`)
+        .ref(`${folder}/${filename}-${currentUser.id}_${timestamp}_${additionalData}`)
         .put(savedFile)
 
       const url = await storage
-        .ref(`${folder}/${filename}-${currentUser.id}_${timestamp}`)
+        .ref(`${folder}/${filename}-${currentUser.id}_${timestamp}_${additionalData}`)
         .getDownloadURL()
 
       return url

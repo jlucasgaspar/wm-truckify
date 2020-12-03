@@ -5,19 +5,17 @@ import { useFirestore } from "./Firestore"
 import { useStorage } from "./Storage"
 import { useAuth } from "./Auth"
 
-import { firebase } from "../services/firebase"
-
 const DriversContext = createContext({
   saveDriver: async () => {},
   driversArray: []
 })
 
 const DriversProvider = ({ children }) => {
-  const [drivers, setdrivers] = useState()
+  const [drivers, setdrivers] = useState([])
   
   const { findWhere, findWhereTwice, save } = useFirestore()
   const { saveFile } = useStorage()
-  const { currentUser, loadingAuth } = useAuth()
+  const { currentUser, loadingAuth, authenticated } = useAuth()
   
   const { addToast } = useToasts()
 
@@ -28,7 +26,7 @@ const DriversProvider = ({ children }) => {
           collection: "drivers",
           whereField: "user_id",
           whereValue: currentUser.id,
-          errMsg: "Erro ao carregar os motoristas."
+          errMsg: currentUser !== {} ? "" : "Erro ao carregar os motoristas."
         })
 
         return setdrivers(data)
@@ -38,19 +36,16 @@ const DriversProvider = ({ children }) => {
       }
     }
 
-    if (!loadingAuth) return getDriversFromDB()
-  }, [addToast, currentUser, findWhere, loadingAuth])
+    if (!loadingAuth && authenticated) return getDriversFromDB()
+  }, [addToast, currentUser, findWhere, loadingAuth, authenticated])
 
   const addDriverToArray = useCallback(newDriver => {
     const newDriverData = { 
       ...newDriver,
       key: newDriver.id,
       created_at: Date(),
-      updated_at: Date(),
-      timestamp_test: firebase.FieldValue.serverTimestamp()
+      updated_at: Date()
     }
-
-    console.log("Teste do timestamp que está no frontend: ", newDriverData)
 
     return setdrivers([newDriverData, ...drivers])
   }, [drivers])

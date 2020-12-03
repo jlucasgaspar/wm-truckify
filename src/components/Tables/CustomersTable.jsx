@@ -5,7 +5,7 @@ import { Link } from "react-router-dom"
 
 const { Column } = Table
 
-const CustomersTable = ({ tableIsFor, customersArray }) => {
+const CustomersTable = ({ path, customersArray }) => {
   const handleDeleteCustomer = useCallback(({ id, name }) => {
     console.log(id, name)
   }, [])
@@ -33,40 +33,24 @@ const CustomersTable = ({ tableIsFor, customersArray }) => {
         dataIndex="cnpj"
       />
   
-      {tableIsFor &&
+      {path &&
         <Column
           title={<strong>Mais informações</strong>}
           render={customer => (
             <Space size="small" key={customer.id}>
-
-              {tableIsFor === "nfs" &&
-                <Link to={`/nfs/${customer.id}/${customer.name}`}>
-                  <Button
-                    icon={<InfoCircleTwoTone twoToneColor="green" style={{ marginRight: 5 }} />}
-                    style={{
-                      borderRadius: 5,
-                      backgroundColor: "#389e0d",
-                      color: "#FFF"
-                    }}
-                  >
-                    Ver peditos e notas
-                  </Button>
-                </Link>
-              }
-
-              {tableIsFor === "products" &&
-                <Link to={`/estoque/${customer.id}/${customer.name}`}>
-                  <Button
-                    icon={<InfoCircleTwoTone twoToneColor="green" style={{ marginRight: 5 }} />}
-                    style={{
-                      borderRadius: 5,
-                      backgroundColor: "green"
-                    }}
-                  >
-                    Ver peditos e notas
-                  </Button>
-                </Link>
-              }
+              
+              <Link to={`/${path}/${customer.id}/${customer.name}`}>
+                <Button
+                  icon={<InfoCircleTwoTone twoToneColor="green" style={{ marginRight: 5 }} />}
+                  style={{
+                    borderRadius: 5,
+                    backgroundColor: "#389e0d",
+                    color: "#FFF"
+                  }}
+                >
+                  Ver peditos e notas
+                </Button>
+              </Link>
 
               <Button
                 onClick={() => handleDeleteCustomer({ id: customer.id, name: customer.name })}

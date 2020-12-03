@@ -24,7 +24,7 @@ const AuthProvider = ({ children }) => {
   const { findWhere, findById, deleteById, save } = useFirestore()
   const { addToast } = useToasts()
 
-  useEffect(() => {   
+  useEffect(() => {
     return auth.onAuthStateChanged(async user => {
       if (!user) {
         setLoadingAuth(false)
@@ -33,7 +33,7 @@ const AuthProvider = ({ children }) => {
       }
 
       const { data } = await findById({
-        collection: "admins",
+        collection: "admins_access",
         id: user.uid,
         errMsg: "Usuário não identificado."
       })
@@ -56,14 +56,14 @@ const AuthProvider = ({ children }) => {
   const register = useCallback(async ({ email, password, successMsg, errMsg }) => {   
     try {
       const { data } = await findWhere({
-        collection: "new_admin",
+        collection: "admin_new",
         whereField: "email",
         whereValue: email,
         errMsg: `E-mail ${email} não possui permissão para ser administrador.`
       })
 
       await deleteById({
-        collection: "new_admin",
+        collection: "admin_new",
         id: data[0].id,
         errMsg: "Erro no servidor."
       })
@@ -78,7 +78,7 @@ const AuthProvider = ({ children }) => {
       }
 
       await save({
-        collection: "admins",
+        collection: "admins_access",
         id: `${user.uid}`,
         savedData: savedUser
       })
@@ -103,7 +103,7 @@ const AuthProvider = ({ children }) => {
   const login = useCallback(async ({ email, password, successMsg, errMsg }) => {
     try {
       const { data } = await findWhere({
-        collection: "admins",
+        collection: "admins_access",
         whereField: "email",
         whereValue: email,
         errMsg: `E-mail ${email} não tem acesso permitido.`

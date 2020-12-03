@@ -14,7 +14,7 @@ const CustomersProvider = ({ children }) => {
   const [customers, setCustomers] = useState([])
 
   const { findWhere, findWhereTwice, save } = useFirestore()
-  const { currentUser, loadingAuth } = useAuth()
+  const { currentUser, loadingAuth, authenticated } = useAuth()
 
   const { addToast } = useToasts()
 
@@ -25,7 +25,7 @@ const CustomersProvider = ({ children }) => {
           collection: "customers",
           whereField: "user_id",
           whereValue: currentUser.id,
-          errMsg: "Erro ao carregar os clientes."
+          errMsg: currentUser !== {} ? "" : "Erro ao carregar os clientes."
         })
 
         return setCustomers(data)
@@ -35,8 +35,8 @@ const CustomersProvider = ({ children }) => {
       }
     }
 
-    if (!loadingAuth) return getCustomerFromFB()
-  }, [addToast, currentUser.id, findWhere, loadingAuth])
+    if (!loadingAuth && authenticated) return getCustomerFromFB()
+  }, [addToast, currentUser.id, findWhere, loadingAuth, currentUser, authenticated])
 
   const addCustomerToArray = useCallback(newCustomer => {
     const newCustomerData = {
@@ -46,8 +46,6 @@ const CustomersProvider = ({ children }) => {
       updated_at: Date(),
       timestamp_test: firebase.FieldValue.serverTimestamp()
     }
-
-    console.log(newCustomerData)
 
     return setCustomers([newCustomerData, ...customers])
   }, [customers])

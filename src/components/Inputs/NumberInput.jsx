@@ -10,6 +10,7 @@ const NumberInput = ({
   icon,
   loadingInput,
   addonAfter,
+  addonBefore,
   lengthNumber,
   lengthNumberMessage
 }) => (
@@ -21,6 +22,7 @@ const NumberInput = ({
     ]}
   >
     <Input
+      addonBefore={addonBefore}
       addonAfter={addonAfter}
       type="number"
       disabled={loadingInput}

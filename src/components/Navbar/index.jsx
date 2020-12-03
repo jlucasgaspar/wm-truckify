@@ -51,7 +51,7 @@ const Navbar = ({ children, authenticated, currentUser, logout }) => {
               borderRight: "solid 1px #DDD"
             }}
           >
-           <Menu.Item
+            <Menu.Item
               style={{ color: "#000", margin: "auto", marginTop: 15 }}
               icon={<HomeOutlined style={{ fontSize: 20, color: "#000" }} />}
               >
@@ -59,7 +59,7 @@ const Navbar = ({ children, authenticated, currentUser, logout }) => {
                 Início
               </Link>
             </Menu.Item>
-           <Menu.Item
+            <Menu.Item
               style={{ color: "#000", margin: "auto", marginTop: 15 }}
               icon={<GrUserManager style={{ fontSize: 20, color: "#000" }} />}
               >
@@ -91,7 +91,7 @@ const Navbar = ({ children, authenticated, currentUser, logout }) => {
               style={{ color: "#000", margin: "auto", marginTop: 15 }}
               icon={<GrMapLocation style={{ fontSize: 20, color: "#000" }} />}
             >
-              <Link to="/notas/pendentes" style={{ color: "black" }}>NFs pendentes</Link>
+              <Link to="/nfs/pendentes" style={{ color: "black" }}>NFs pendentes</Link>
             </Menu.Item>
             <SubMenu
               style={{ margin: "auto", marginTop: 15 }}

@@ -6,6 +6,7 @@ import { StorageProvider } from "./Storage"
 //import { GlobalProvider } from "./Global"
 import { DriversProvider } from "./Drivers"
 import { CustomersProvider } from "./Customers"
+import { NfsProvider } from "./Nfs"
 
 const AppProvider = ({ children }) => (
   <FirestoreProvider>
@@ -13,7 +14,9 @@ const AppProvider = ({ children }) => (
       <StorageProvider>
         <DriversProvider>
           <CustomersProvider>
-            {children}
+            <NfsProvider>
+              {children}
+            </NfsProvider>
           </CustomersProvider>
         </DriversProvider>
       </StorageProvider>

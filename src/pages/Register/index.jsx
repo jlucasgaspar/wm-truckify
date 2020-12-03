@@ -20,19 +20,15 @@ const Register = () => {
   const handleRegisterUser = useCallback(async({ email, password }) => {
     setLoadingForm(true)
     
-    const currentUser = await register({
+    await register({
       email: email,
       password: password,
       successMsg: `Bem-vindo, ${email}.`,
       errMsg: `E-mail ${email} não tem permissão para ser administrador.`
     })
 
-    console.log(currentUser)
-
     return setLoadingForm(false)
   }, [register])
-
-  //console.log(useAuth())
 
   return (
     <Container>
