@@ -4,6 +4,7 @@ import { firestore, firebase } from "../services/firebase"
 
 const FirestoreContext = createContext({
   save: async ({ collection, id, savedData, successMsg, errMsg }) => {},
+  saveSubcollection: async () => {},
   update: async () => {},
   deleteById: async () => {},
   find: async () => {},
@@ -12,7 +13,8 @@ const FirestoreContext = createContext({
   findWhereTwice: async () => {},
   findWhereIsDifferentAndWhereIsEqual: async () => {},
   findByOrder: async () => {},
-  findWhereByOrder: async () => {}
+  findWhereByOrder: async () => {},
+  findByIdSubcollection: async ()=> {}
 })
 
 const FirestoreProvider = ({ children }) => {
@@ -38,12 +40,42 @@ const FirestoreProvider = ({ children }) => {
     }
   }, [addToast])
 
+  const saveSubcollection = useCallback(async (
+    { collection, id, subcollection, subId, savedData, successMsg, errMsg }
+  ) => {
+    try {
+      await firestore
+        .collection(collection)
+        .doc(id)
+        .collection(subcollection)
+        .doc(subId)
+        .set({
+          ...savedData,
+          created_at: firebase.FieldValue.serverTimestamp(),
+          updated_at: firebase.FieldValue.serverTimestamp()
+        })
+
+      if (successMsg) {
+        addToast(successMsg, { appearance: "success" })
+      }
+    } catch (err) {
+      console.log("useFirestor Error: ", err)
+      
+      if (errMsg) {
+        return addToast(errMsg, { appearance: "error" })
+      }
+    }
+  }, [addToast])
+
   const update = useCallback(async ({ collection, id, updatedData, successMsg, errMsg }) => {
     try {
       await firestore
         .collection(collection)
         .doc(id)
-        .update(updatedData)
+        .update({
+          ...updatedData,
+          updated_at: firebase.FieldValue.serverTimestamp()
+        })
 
       if (successMsg) {
         addToast(successMsg, { appearance: "success" })
@@ -91,7 +123,9 @@ const FirestoreProvider = ({ children }) => {
     } catch (err) {
       console.log("useFirestore Error: ", err)
 
-      return addToast(errMsg, { appearance: "error" })
+      if (errMsg) {
+        return addToast(errMsg, { appearance: "error" })
+      }
     }
   }, [addToast])
 
@@ -202,10 +236,37 @@ const FirestoreProvider = ({ children }) => {
       
   }, [addToast])
 
+  const findByIdSubcollection = useCallback(async ({
+    collection, id, subcollection,  errMsg
+  }) => {
+    try {
+      const snap = await firestore
+      .collection(collection)
+      .doc(id)
+      .collection(subcollection)
+      .get()
+
+      const array = []
+      snap.forEach(doc => {
+        return array.push({ ...doc.data(), key: doc.id })
+      })
+
+      return { data: array, snapshot: snap }
+    } catch (err) {
+      console.log("useFirestore Error: ", err)
+      
+      if (errMsg) {
+        return addToast(errMsg, { appearance: "error" })
+      }
+    }
+
+  }, [addToast])
+
   return (
     <FirestoreContext.Provider
       value={{
         save,
+        saveSubcollection,
         update,
         deleteById,
         find,
@@ -214,7 +275,8 @@ const FirestoreProvider = ({ children }) => {
         findWhere,
         findWhereTwice,
         findWhereIsDifferentAndWhereIsEqual,
-        findWhereByOrder
+        findWhereByOrder,
+        findByIdSubcollection
       }}
     >
       {children}

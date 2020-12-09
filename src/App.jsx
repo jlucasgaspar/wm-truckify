@@ -8,6 +8,7 @@ import Routes from "./routes"
 
 import GlobalStyle from "./styles/global"
 import "antd/dist/antd.css"
+import "leaflet/dist/leaflet.css"
 
 const App = () => (
   <ToastProvider autoDismissTimeout={3000} autoDismiss={true}>

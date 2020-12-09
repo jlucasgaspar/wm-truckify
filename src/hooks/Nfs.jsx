@@ -60,6 +60,18 @@ const NfsProvider = ({ children }) => {
     try {
       const timestamp = Date.now()
 
+      const { snapshot } = await findWhereTwice({
+        collection: "nfs",
+        whereField: "user_id",
+        whereValue: currentUser.id,
+        whereField2: "id",
+        whereValue2: savedData.id
+      })
+      
+      if (!snapshot.empty) {
+        return addToast(`NF ${nfNumberForError} já existe.`, { appearance: "error" })
+      }
+
       let fileUrl = ""
 
       if (savedData.file) {
@@ -70,19 +82,7 @@ const NfsProvider = ({ children }) => {
           errMsg: `Erro ao salvar o arquivo ${savedData.file.name}.`
         })
       }
-
-      const { snapshot } = await findWhereTwice({
-        collection: "nfs",
-        whereField: "user_id",
-        whereValue: currentUser.id,
-        whereField2: "id",
-        whereValue2: savedData.id
-      })
-
-      if (!snapshot.empty) {
-        return addToast(`NF ${nfNumberForError} já existe.`, { appearance: "error" })
-      }
-
+      
       const savedNf = {
         ...savedData,
         file: fileUrl,

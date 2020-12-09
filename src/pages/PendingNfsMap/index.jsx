@@ -24,7 +24,7 @@ const PendingNfsMap = () => {
     }
 
     return getNfsToDeliveryFromDB()
-  }, [])
+  }, [getPendingNfs, setNfsArray])
 
   const markerIcon = Leaflet.icon({
     iconUrl: mapIcon,
@@ -38,8 +38,7 @@ const PendingNfsMap = () => {
     <MapContainer
       center={[-22.8213219, -43.2804769]}
       zoom={10}
-      style={{ width: "100%", height: "90vh", marginTop: 5 }}
-      style={{ zIndex: 100 }}
+      style={{ width: "100%", height: "100vh", marginTop: 5, zIndex: 100 }}
     >
       <TileLayer
         url="https://2.base.maps.ls.hereapi.com/maptile/2.1/maptile/newest/normal.day/{z}/{x}/{y}/512/png8?apiKey=I516H8P7d-TsFoo6NK8IfwULAbZR1u5CmNHSqLYdonk&ppi=320"

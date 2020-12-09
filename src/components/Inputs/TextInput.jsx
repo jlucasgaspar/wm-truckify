@@ -2,6 +2,7 @@ import React from "react"
 import { Form, Input } from "antd"
 
 const TextInput = ({
+  label,
   name,
   required,
   message,
@@ -10,6 +11,7 @@ const TextInput = ({
   loadingInput
 }) => (
   <Form.Item
+    label={label}
     name={name}
     rules={[
       { required: required, message: message }

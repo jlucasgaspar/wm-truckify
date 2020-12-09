@@ -1,0 +1,14 @@
+{
+  "projects": {
+    "default": "wm--truckify"
+  },
+  "targets": {
+    "wm--truckify": {
+      "hosting": {
+        "adm": [
+          "wm-truckify-adm"
+        ]
+      }
+    }
+  }
+}

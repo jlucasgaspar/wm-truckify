@@ -3,15 +3,11 @@ import { Link } from "react-router-dom"
 
 import { Layout, Menu } from "antd"
 import { GrMapLocation, GrUserManager } from "react-icons/gr"
-import {
-  PoweroffOutlined,
-  EditOutlined,
-  FileDoneOutlined,
-  DatabaseOutlined,
-  IdcardOutlined,
-  UserOutlined,
-  HomeOutlined
-} from "@ant-design/icons"
+import { PoweroffOutlined, EditOutlined, FileDoneOutlined, HomeOutlined } from "@ant-design/icons"
+import { DatabaseOutlined, IdcardOutlined, UserOutlined, } from "@ant-design/icons"
+
+import logoHidden from "../../assets/images/logo-menu-hidden.png"
+import logo from "../../assets/images/logo.png"
 
 const { Sider } = Layout
 const { SubMenu } = Menu
@@ -37,7 +33,10 @@ const Navbar = ({ children, authenticated, currentUser, logout }) => {
         >
           <div onClick={() => setMenuIsHidden(!menuIsHidden)} style={{ height: 100, display: "flex" }}>
             <Link to="/inicio" style={{ margin: "auto" }}>
-              Logo
+              {menuIsHidden
+                ? <img src={logoHidden} alt="logo" width={75} />
+                : <img src={logo} alt="logo" width={170} />
+              }
             </Link>
           </div>
 

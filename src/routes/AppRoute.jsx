@@ -7,7 +7,7 @@ import Navbar from "../components/Navbar"
 import { LoadingComponent } from "../components/Loading"
 
 const AppRoute = ({ isPrivate = false, ...rest }) => {
-  const { loadingAuth, authenticated, currentUser } = useAuth()
+  const { loadingAuth, authenticated, currentUser, logout } = useAuth()
 
   if (loadingAuth) return <LoadingComponent />
 
@@ -15,6 +15,7 @@ const AppRoute = ({ isPrivate = false, ...rest }) => {
     <Navbar
       authenticated={authenticated}
       currentUser={currentUser}
+      logout={logout}
     >
       <Route {...rest} />
     </Navbar>

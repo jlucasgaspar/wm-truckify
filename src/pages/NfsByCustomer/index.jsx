@@ -30,7 +30,7 @@ Geocode.setRegion("br")
 Geocode.enableDebug()
 
 const NfsByCustomer = () => {
-  const [loadingPage, setLoadingPage] = useState(false)
+  const [loadingPage, setLoadingPage] = useState(true)
 
   const [currentNf, setCurrentNf] = useState({})
   const [nfDetailedVisible, setNfDetailedVisible] = useState(false)
